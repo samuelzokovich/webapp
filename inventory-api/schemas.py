@@ -14,4 +14,4 @@ class Item(ItemBase):
     id: str  # Blob name as ID
 
     class Config:
-        orm_mode = True
+        from_attributes = True
