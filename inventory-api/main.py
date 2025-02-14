@@ -1,8 +1,8 @@
-import os
 from fastapi import FastAPI, Depends, HTTPException
 from azurestorage import AzureBlobStorage
 from typing import List
-from . import schemas, auth
+import schemas, auth
+import os
 
 app = FastAPI()
 
@@ -14,7 +14,7 @@ storage = AzureBlobStorage(AZURE_CONNECTION_STRING, CONTAINER_NAME)
 @app.post("/items/", response_model=schemas.Item)
 def create_item(item: schemas.ItemCreate, current_user: dict = Depends(auth.get_current_user)):
     item_id = f"{item.name}-{current_user['user_id']}"  # Unique ID for the item
-    item_data = item.dict()
+    item_data = item.model_dump()
     storage.upload_item(item_id, item_data)
     return {**item_data, "id": item_id}
 
